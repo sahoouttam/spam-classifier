@@ -1,3 +1,4 @@
+import joblib
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
@@ -17,7 +18,7 @@ x_train, x_test, y_train, y_test = train_test_split(
 
 model = Pipeline([
     ('tfidf', TfidfVectorizer(stop_words='english', max_df=0.9)),
-    ('clf', LogisticRegression(max_iter=1000))
+    ('clf', LogisticRegression(max_iter=1000, class_weight='balanced'))
 ])
 
 model.fit(x_train, y_train)
@@ -34,4 +35,7 @@ sample_messages = [
 predictions = model.predict(sample_messages)
 for msg, predict in zip(sample_messages, predictions):
     print(f"Message: {msg}\nPrediction: {'Spam' if predict == 1 else 'Not Spam'}\n")
+
+joblib.dump(model, "spam_model.pkl")
+print("Model saved as spam_model.pkl")
 
